@@ -14,52 +14,116 @@ class JugadoresDestacados
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $jugador = null;
+    private ?int $categoria = null;
 
     #[ORM\Column(length: 100)]
-    private ?string $posicion = null;
+    private ?string $nombres = null;
 
     #[ORM\Column(length: 100)]
-    private ?string $habilidades = null;
+    private ?string $apellidos = null;
 
+    #[ORM\Column(length: 100)]
+    private ?string $genero = null;
+
+    #[ORM\Column]
+    private ?int $edad = null;
+    
+    #[ORM\Column]
+    private ?float $estatura = null;
+    
+    #[ORM\Column]
+    private ?float $peso = null;
+
+   
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getJugador(): ?int
+    public function getCategoria(): ?int
     {
-        return $this->jugador;
+        return $this->categoria;
     }
 
-    public function setJugador(int $jugador): static
+    public function setCategoria(?int $categoria): self
     {
-        $this->jugador = $jugador;
+        $this->categoria = $categoria;
 
         return $this;
     }
 
-    public function getPosicion(): ?string
+    public function getNombres(): ?string
     {
-        return $this->posicion;
+        return $this->nombres;
     }
 
-    public function setPosicion(string $posicion): static
+    public function setNombres(?string $nombres): self
     {
-        $this->posicion = $posicion;
+        $this->nombres = $nombres;
 
         return $this;
     }
 
-    public function getHabilidades(): ?string
+    public function getApellidos(): ?string
     {
-        return $this->habilidades;
+        return $this->apellidos;
     }
 
-    public function setHabilidades(string $habilidades): static
+    public function setApellidos(?string $apellidos): self
     {
-        $this->habilidades = $habilidades;
+        $this->apellidos = $apellidos;
 
         return $this;
     }
+
+    public function getGenero(): ?string
+    {
+        return $this->genero;
+    }
+
+    public function setGenero(?string $genero): self
+    {
+        $this->genero = $genero;
+
+        return $this;
+    }
+
+    public function getEstatura(): ?float
+    {
+        return $this->estatura;
+    }
+
+    public function setEstatura(?float $estatura): self
+    {
+        $this->estatura = $estatura;
+
+        return $this;
+    }
+
+    public function getPeso(): ?float
+    {
+        return $this->peso;
+    }
+
+    public function setPeso(?float $peso): self
+    {
+        $this->peso = $peso;
+
+        return $this;
+    }
+
+    public function getEdad(): ?int
+    {
+        return $this->edad;
+    }
+
+    public function setEdad(?int $edad): self
+    {
+        $this->edad = $edad;
+
+        return $this;
+    }
+   
+
+    
 }

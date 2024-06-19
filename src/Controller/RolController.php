@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RolController extends AbstractController
 {
-    #[Route('/rol/', name: 'crearrol', methods: ['POST'])]
+    #[Route('/rol', name: 'crearrol', methods: ['POST'])]
     public function crearrol(Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);

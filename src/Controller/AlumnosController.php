@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use App\Repository\AlumnosRepository;
 use App\Entity\Alumnos;
 use App\Entity\Escuelas;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,7 +12,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AlumnosController extends AbstractController
 {
-    #[Route('/alumno/', name: 'crearAlumno', methods: ['POST'])]
+    private $alumnosRepository;
+
+    public function __construct(AlumnosRepository $alumnosRepository)
+    {
+        $this->alumnosRepository = $alumnosRepository;
+    }
+
+    #[Route('/alumnoNuevo', name: 'crearAlumno', methods: ['POST'])]
     public function crearAlumno(Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -25,7 +32,7 @@ class AlumnosController extends AbstractController
             $alumno = new Alumnos();
         }
         if (isset($data['escuela']) && $data['escuela'] !== '') {
-            $alumno->setEscuela($data['escuela']);
+            $alumno->setEscuela($entityManager->getRepository(Escuelas::class)->find($data['escuela']));
         } else {
             return $this->json(['error' => 9999, 'mensaje' => 'Falta el campo escuela']);
         }
@@ -81,49 +88,44 @@ class AlumnosController extends AbstractController
     #[Route('/alumno/{id<\d+>?}', name: 'consultarAlumno', methods: ['GET'])]
     public function consultarAlumnoPorId(?int $id, EntityManagerInterface $entityManager): Response
     {
-        $w_alumnos = [];
-        if ($id === null) {
-            $alumnos = $entityManager->getRepository(Alumnos::class)->findAll();
-            foreach ($alumnos as $key => $value) {
-                $w_escuelas = $entityManager->getRepository(Escuelas::class)->find($value->getEscuela());
-                $w_aux = [
-                    "id" =>  $value->getId(),
-                    "escuela" => $value->getEscuela(),
-                    "cedula" => $value->getCedula(),
-                    "nombres" => $value->getNombres(),
-                    "apellidos" => $value->getApellidos(),
-                    "genero" => $value->getGenero(),
-                    "estatura" => $value->getEstatura(),
-                    "peso" => $value->getPeso(),
-                    "edad" => $value->getEdad(),
-                    "escuela_nombre" => $w_escuelas->getNombre(),
-                ];
-                array_push($w_alumnos, $w_aux);
+        if ($id !== null) {
+            $alumnos = $this->alumnosRepository->findAlumnosCompleto($id);
+            if ($alumnos) {
+                return $this->json(['error' => 0, 'mensaje' => 'OK', 'datos' => $alumnos]);
             }
-            return $this->json(['error' => 0, 'mensaje' => 'OK', 'datos' => $w_alumnos]);
+            return $this->json(['error' => 9999, 'mensaje' => 'No cuenta con datos']);
+        }else{
+            $alumnos = $this->alumnosRepository->findTodosAlumnosCompleto();
+            if ($alumnos) {
+                return $this->json(['error' => 0, 'mensaje' => 'OK', 'datos' => $alumnos]);
+            }
+            return $this->json(['error' => 9999, 'mensaje' => 'No cuenta con datos']);
         }
-        $alumno[0] = $entityManager->getRepository(Alumnos::class)->find($id);
+        // return $this->json(['error' => 9998, 'mensaje' => 'ID no proporcionado']);
+    }
+    #[Route('/alumnoEliminar/{id<\d+>?}', name: 'eliminarAlumno', methods: ['GET'])]
+    public function eliminarAlumno(?int $id, EntityManagerInterface $entityManager): Response
+    {
+        $alumno = $entityManager->getRepository(Alumnos::class)->find($id);
         if (!$alumno) {
-            return $this->json(['error' => 0, 'mensaje' => 'La Alumno con el ID proporcionado no existe']);
+            return $this->json(['error' => 0, 'mensaje' => 'El alumno con el ID proporcionado no existe']);
         }
-        if ($alumno[0] == null)
-            return $this->json(
-                ['error' => 9999, 'mensaje' => 'No cuenta con datos' ]
-            );
-            $w_escuelas = $entityManager->getRepository(Escuelas::class)->find($alumno[0]->getEscuela());
-                    $w_aux = [
-                    "id" => $alumno[0]->getId(),
-                    "escuela" => $alumno[0]->getEscuela(),
-                    "cedula" => $alumno[0]->getCedula(),
-                    "nombres" => $alumno[0]->getNombres(),
-                    "apellidos" => $alumno[0]->getApellidos(),
-                    "genero" => $alumno[0]->getGenero(),
-                    "estatura" => $alumno[0]->getEstatura(),
-                    "peso" => $alumno[0]->getPeso(),
-                    "edad" => $alumno[0]->getEdad(),
-                    "escuela_nombre" => $w_escuelas->getNombre(),
-                ];
-                array_push($w_alumnos, $w_aux);
-        return $this->json(['error' => 0, 'mensaje' => 'OK', 'datos' => $w_alumnos]);
+        $entityManager->remove($alumno);
+        $entityManager->flush();
+        return $this->json(['error' => 0, 'mensaje' => 'Eliminado correctamente']);
+    }
+    // 
+
+    #[Route('/alumno_escuela/{id<\d+>?}', name: 'consultarAlumnoPorEscuela', methods: ['GET'])]
+    public function consultarAlumnoPorEscuela(?int $id, EntityManagerInterface $entityManager): Response
+    {
+        if ($id !== null) {
+            $alumnos = $this->alumnosRepository->findAlumnosByEscuelaId($id);
+            if ($alumnos) {
+                return $this->json(['error' => 0, 'mensaje' => 'OK', 'datos' => $alumnos]);
+            }
+            return $this->json(['error' => 9999, 'mensaje' => 'No cuenta con datos']);
+        }
+        return $this->json(['error' => 9998, 'mensaje' => 'ID no proporcionado']);
     }
 }

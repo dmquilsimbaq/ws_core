@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class UsuariosController extends AbstractController
 {
         
-    #[Route('/usuario/', name: 'crearUsuario', methods: ['POST'])]
+    #[Route('/usuario', name: 'crearUsuario', methods: ['POST'])]
     public function crearUsuario(Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -107,7 +107,7 @@ class UsuariosController extends AbstractController
         array_push($w_usuarios, $w_aux);
         return $this->json(['error' => 0, 'mensaje' => 'OK', 'datos' => $w_usuarios]);
     }
-    #[Route('/usuario/{id<\d+>?}', name: 'eliminarUsuario', methods: ['DELETE'])]
+    #[Route('/usuarioEliminar/{id<\d+>?}', name: 'eliminarUsuario', methods: ['GET'])]
     public function eliminarUsuario(?int $id, EntityManagerInterface $entityManager): Response
     {
         $usuario= $entityManager->getRepository(Usuarios::class)->find($id);

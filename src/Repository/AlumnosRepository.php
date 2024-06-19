@@ -20,7 +20,78 @@ class AlumnosRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Alumnos::class);
     }
+    public function findAlumnosByEscuelaId($id): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->select(
+                'a.id',
+                'a.categoria',
+                'a.cedula',
+                'a.nombres',
+                'a.apellidos',
+                'a.genero',
+                'a.estatura',
+                'a.peso',
+                'a.edad',
+                'e.id AS escuela_id',
+                'e.nombre AS escuela_nombre',
+                'e.direccion AS escuela_direccion',
+                'e.categoria AS escuela_categoria'
+            )
+            ->innerJoin('a.escuela', 'e')
+            ->where('e.id = :id')
+            ->setParameter('id', $id);
 
+        return $qb->getQuery()->getArrayResult();
+    }
+    public function findAlumnosCompleto($id): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->select(
+                'a.id',
+                'a.categoria',
+                'a.cedula',
+                'a.nombres',
+                'a.apellidos',
+                'a.genero',
+                'a.estatura',
+                'a.peso',
+                'a.edad',
+                'e.id AS escuela_id',
+                'e.nombre AS escuela_nombre',
+                'e.direccion AS escuela_direccion',
+                'e.categoria AS escuela_categoria'
+            )
+            ->innerJoin('a.escuela', 'e')
+            ->where('a.id = :id')
+            ->setParameter('id', $id);
+
+        return $qb->getQuery()->getArrayResult();
+    }
+    public function findTodosAlumnosCompleto(): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->select(
+                'a.id',
+                'a.categoria',
+                'a.cedula',
+                'a.nombres',
+                'a.apellidos',
+                'a.genero',
+                'a.estatura',
+                'a.peso',
+                'a.edad',
+                'e.id AS escuela_id',
+                'e.nombre AS escuela_nombre',
+                'e.direccion AS escuela_direccion',
+                'e.categoria AS escuela_categoria'
+            )
+            ->innerJoin('a.escuela', 'e');
+            // ->where('a.id = :id')
+            // ->setParameter('id', $id);
+
+        return $qb->getQuery()->getArrayResult();
+    }
 //    /**
 //     * @return Alumnos[] Returns an array of Alumnos objects
 //     */

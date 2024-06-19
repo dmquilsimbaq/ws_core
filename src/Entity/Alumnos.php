@@ -13,8 +13,10 @@ class Alumnos
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $escuela = null;
+    #[ORM\ManyToOne(targetEntity: Escuelas::class)]
+    #[ORM\JoinColumn(name: "escuela", referencedColumnName: "id", nullable: true)]
+    private ?Escuelas $escuela = null;
+
     #[ORM\Column]
     private ?int $categoria = null;
 
@@ -43,16 +45,14 @@ class Alumnos
     {
         return $this->id;
     }
-
-    public function getEscuela(): ?int
+    public function getEscuela(): ?Escuelas
     {
         return $this->escuela;
     }
 
-    public function setEscuela(int $escuela): static
+    public function setEscuela(?Escuelas $escuela): self
     {
         $this->escuela = $escuela;
-
         return $this;
     }
     public function getCategoria(): ?int

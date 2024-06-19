@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CategoriaEscuelaController extends AbstractController
 {
-    #[Route('/categoria_escuela/', name: 'crearCategoriaEscuela', methods: ['POST'])]
+    #[Route('/categoria_escuela', name: 'crearCategoriaEscuela', methods: ['POST'])]
     public function crearCategoriaEscuela(Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -55,7 +55,7 @@ class CategoriaEscuelaController extends AbstractController
         return $this->json(['error' => 0, 'mensaje' => 'OK', 'datos' => $categoria_escuela]);
     }
     
-   #[Route('/categoria_escuela/{id<\d+>?}', name: 'eliminarCategoriaEscuela', methods: ['DELETE'])]
+   #[Route('/categoria_escuela_eliminar/{id<\d+>?}', name: 'eliminarCategoriaEscuela', methods: ['GET'])]
     public function eliminarCategoriaEscuela(?int $id, EntityManagerInterface $entityManager): Response
     {
         $categoria_escuela = $entityManager->getRepository(CategoriaEscuela::class)->find($id);

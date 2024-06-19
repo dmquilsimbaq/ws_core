@@ -11,11 +11,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class CategoriasEstudianteController extends AbstractController
 {
     
-    #[Route('/categoria_estudiante/', name: 'crearCategoriaEstudiante', methods: ['POST'])]
+    #[Route('/categoria_estudiante', name: 'crearCategoriaEstudiante', methods: ['POST'])]
     public function crearCategoriaEstudiante(Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
-        // var_dump($data);
         if (isset($data['id'])) {
             $categoria_estudiante = $entityManager->getRepository(CategoriaEstudiante::class)->find($data['id']);
             if (!$categoria_estudiante) {

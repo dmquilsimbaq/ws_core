@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class JugadoresTitulosController extends AbstractController
 {
-    #[Route('/jugadores_titulo/', name: 'crearJugadoresTitulos', methods: ['POST'])]
+    #[Route('/jugadores_titulo', name: 'crearJugadoresTitulos', methods: ['POST'])]
     public function crearJugadoresTitulos(Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);

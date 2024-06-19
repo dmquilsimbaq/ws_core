@@ -17,7 +17,7 @@ class EscuelaController extends AbstractController
         return $this->json('Bienvenido');
     }
 
-    #[Route('/escuela/', name: 'crearEscuela', methods: ['POST'])]
+    #[Route('/escuela', name: 'crearEscuela', methods: ['POST'])]
     public function crearEscuela(Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
@@ -76,8 +76,8 @@ class EscuelaController extends AbstractController
             );
         return $this->json(['error' => 0, 'mensaje' => 'OK', 'datos' => $escuela]);
     }
-    #[Route('/escuela/{id<\d+>?}', name: 'eliminarEscuelaPorId', methods: ['DELETE'])]
-    public function eliminarEscuelaPorId(?int $id, EntityManagerInterface $entityManager): Response
+    #[Route('/escuelaEliminar/{id}', name: 'eliminarEscuelaPorId', methods: ['GET'])]
+    public function eliminarEscuelaPorId($id, EntityManagerInterface $entityManager): Response
     {
         $escuela = $entityManager->getRepository(Escuelas::class)->find($id);
         if (!$escuela) {
@@ -86,5 +86,21 @@ class EscuelaController extends AbstractController
         $entityManager->remove($escuela);
         $entityManager->flush();
         return $this->json(['error' => 0, 'mensaje' => 'Eliminado correctamente']);
+    }
+
+    #[Route('/escuela_profesor/{id}', name: 'consultarEscuelaPorprofesor', methods: ['GET'])]
+    public function consultarEscuelaPorprofesor(?int $id, EntityManagerInterface $entityManager): Response
+    {
+        if ($id === null) {
+            $escuelas = $entityManager->getRepository(Escuelas::class)->findAll();
+            return $this->json(['error' => 0, 'mensaje' => 'OK', 'datos' => $escuelas]);
+        }
+        $escuela[0] = $entityManager->getRepository(Escuelas::class)->find($id);
+        if (!$escuela) {
+            return $this->json(['error' => 0, 'mensaje' => 'La escuela con el ID proporcionado no existe']);
+        }
+        if ($escuela[0] == null)
+            return $this->json(['error' => 9999, 'mensaje' => 'No cuenta con datos' ]);
+        return $this->json(['error' => 0, 'mensaje' => 'OK', 'datos' => $escuela]);
     }
 }

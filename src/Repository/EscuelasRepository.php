@@ -24,17 +24,29 @@ class EscuelasRepository extends ServiceEntityRepository
 //    /**
 //     * @return Escuelas[] Returns an array of Escuelas objects
 //     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+   public function escuelaProfesor($value): array
+   {
+       return $this->createQueryBuilder('e')
+            ->select(
+                'a.id',
+                'a.categoria',
+                'a.cedula',
+                'a.nombres',
+                'a.apellidos',
+                'a.genero',
+                'a.estatura',
+                'a.peso',
+                'a.edad',
+                'e.id AS escuela_id',
+                'e.nombre AS escuela_nombre',
+                'e.direccion AS escuela_direccion',
+                'e.categoria AS escuela_categoria'
+            )
+            ->innerJoin('a.escuela', 'e')
+            ->where('e.id = :id')
+            ->setParameter('id', $id);
+       ;
+   }
 
 //    public function findOneBySomeField($value): ?Escuelas
 //    {
